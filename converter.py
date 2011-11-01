@@ -31,19 +31,20 @@ class Guestbook(webapp.RequestHandler):
     def post(self):
         self.response.out.write('<html><body>')
 
-        quantityIn = float(self.request.get('quantity'))
+        quantityIn = self.request.get('quantity')
         fromCurrency = self.request.get('from')
         toCurrency = self.request.get('to')
 
         # only try the conversion if the user's input validates.
         if (validateInput(quantityIn, fromCurrency, toCurrency)):
-            quantityOut = convert(quantityIn, fromCurrency, toCurrency)
+            quantityOut = convert(float(quantityIn), fromCurrency, toCurrency)
             self.response.out.write(form + '<br>')
     
             self.response.out.write('<h3>' + str(quantityIn) + ' ' + fromCurrency)
-            self.response.out.write(' is approximately ' + str(quantityOut) + ' ' + toCurrency)
+            self.response.out.write(' is approximately ' + str(quantityOut) + ' ' + toCurrency + '</h3>')
         else:
-            self.response.out.write('Ha!  Your plans have been foiled l33t h4x0r.');       
+            self.response.out.write(form + '<br>')
+            self.response.out.write('<h3>Invalid input, please try again.</h3>');       
 
         self.response.out.write('</body></html>')
 
@@ -63,6 +64,11 @@ def validateInput(quantity, fromCurrency, toCurrency):
     if toCurrency not in supportedCurs:
         return False
     if quantity is None:
+        return False
+    try:
+        float(quantity)
+    except:
+        # could not parse a float out of the quantity string.
         return False
 
     return True
