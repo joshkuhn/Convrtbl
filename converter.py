@@ -66,7 +66,7 @@ class Converter(webapp.RequestHandler):
         only needs conversions from 1 USD.
         """
         
-        baseValue = quantity * self.extab[fromCurrency]
+        baseValue = quantity / self.extab[fromCurrency]
         finalValue = baseValue * self.extab[toCurrency]
             
         return finalValue
